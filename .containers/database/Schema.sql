@@ -28,7 +28,7 @@ ALTER TABLE
 CREATE TABLE `borrowers`(
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
-    `email` VARCHAR(100) NOT NULL,
+    `email` VARCHAR(100) NOT NULL UNIQUE,
     `created_at` TIMESTAMP NOT NULL DEFAULT NOW(),
     `password_hash` TEXT NOT NULL
 );
