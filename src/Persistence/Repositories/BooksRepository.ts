@@ -51,8 +51,13 @@ export class BooksRepository implements IBooksRepository{
         return result[0];
     }
 
-    list(): Promise<BookDto[]> {
-        throw new Error("Method not implemented.");
+     async list(): Promise<BookDto[]> {
+        const [result] : any = await this._dbConnection.query(`
+        SELECT title, author, isbn, shelf_location, available_quantity 
+        FROM books 
+        `);
+
+        return result;
     }
 
 }
