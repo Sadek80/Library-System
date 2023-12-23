@@ -6,12 +6,12 @@ export interface IRepository<TType, TDto>{
     /**
     * Add TType to The Database
     */
-    add(book : TType) : Promise<number>;
+    add(type : TType) : Promise<number>;
     
      /**
      * Update TType in the Database
      */
-    update(id : number, book : TType) : Promise<number>;
+    update(id : number, type : TType) : Promise<number>;
 
      /**
      * Delete TType from The Database
