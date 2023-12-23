@@ -6,6 +6,10 @@
     "outDir": "dist",
     "sourceMap": true,
     "noImplicitAny": true,
+    "lib": ["es6", "dom"],
+    "types": ["reflect-metadata"],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
     },
 
     "include": ["src/**/*"],

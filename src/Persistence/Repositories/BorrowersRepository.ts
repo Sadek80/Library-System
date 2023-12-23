@@ -4,11 +4,13 @@ import { BorrowerDto } from "Domain/Dtos/Borrowers/BorrowerDto";
 import { BorrowerQueryParams } from "Domain/Dtos/Borrowers/BorrowerQueryParams";
 import { Borrower } from "Domain/Types/Borrower";
 import { Pool } from 'mysql2/promise';
+import { inject, injectable } from 'inversify';
 
+@injectable()
 export class BorrowersRepository implements IBorrowersRepository{
     private readonly _dbConnection : Pool;
 
-    constructor(private readonly _dbService : IDatabaseService)
+    constructor(@inject("IDatabaseService") private readonly _dbService : IDatabaseService)
     {
         this._dbConnection = _dbService.getConnection();
     }

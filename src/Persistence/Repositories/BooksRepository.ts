@@ -4,11 +4,13 @@ import { Pool } from 'mysql2/promise';
 import { BookDto } from "Domain/Dtos/Books/BookDto";
 import {BookQueryParams} from 'Domain/Dtos/Books/BookQueryParams'
 import { Book } from "Domain/Types/Book";
+import { inject, injectable } from 'inversify';
 
+@injectable()
 export class BooksRepository implements IBooksRepository{
     private readonly _dbConnection : Pool;
 
-    constructor(private readonly _dbService : IDatabaseService)
+    constructor(@inject("IDatabaseService") private readonly _dbService : IDatabaseService)
     {
         this._dbConnection = _dbService.getConnection();
     }

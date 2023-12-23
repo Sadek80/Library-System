@@ -4,10 +4,13 @@ import { StatusCodes } from "Domain/Abstractions/Helpers/StatusCodes";
 import { IBooksService } from "Domain/Abstractions/Services/IBooksService";
 import { BookDto } from "Domain/Dtos/Books/BookDto";
 import {BookQueryParams} from 'Domain/Dtos/Books/BookQueryParams'
+import { injectable, inject } from 'inversify';
 
+
+@injectable()
 export class BooksService implements IBooksService
 {
-    constructor(private readonly _booksRepository : IBooksRepository)
+    constructor(@inject("IBooksRepository") private readonly _booksRepository : IBooksRepository)
     {
     }
 

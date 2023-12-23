@@ -8,12 +8,15 @@ import { RegisterBorrowerDto } from "Domain/Dtos/Borrowers/RegisterBorrowerDto";
 import { IPasswordHasher } from "Domain/Abstractions/Helpers/IPasswordHasher";
 import { Borrower } from "Domain/Types/Borrower";
 import { IEmailValidator } from "Domain/Abstractions/Helpers/IEmailValidator";
+import { injectable, inject } from 'inversify';
 
+
+@injectable()
 export class BorrowersService implements IBorrowersService
 {
-    constructor(private readonly _borrowersRepository : IBorrowersRepository,
-                private readonly _passwordHasher: IPasswordHasher,
-                private readonly _emailValidator: IEmailValidator)
+    constructor(@inject("IBorrowersRepository") private readonly _borrowersRepository : IBorrowersRepository,
+                @inject("IPasswordHasher")private readonly _passwordHasher: IPasswordHasher,
+                @inject("IEmailValidator") private readonly _emailValidator: IEmailValidator)
     {
     }
 
