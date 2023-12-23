@@ -1,6 +1,6 @@
 import { IBooksRepository } from "Domain/Abstractions/Repositories/IBooksRepository";
 import { Response } from "Domain/Dtos/Response";
-import { StatusCodes } from "Domain/Abstractions/StatusCodes";
+import { StatusCodes } from "Domain/Abstractions/Helpers/StatusCodes";
 import { IBooksService } from "Domain/Abstractions/Services/IBooksService";
 import { BookDto } from "Domain/Dtos/Books/BookDto";
 import {BookQueryParams} from 'Domain/Dtos/Books/BookQueryParams'
