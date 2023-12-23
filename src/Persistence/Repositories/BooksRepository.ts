@@ -1,7 +1,8 @@
 import { IDatabaseService } from "Domain/Abstractions/IDatabaseService";
 import { IBooksRepository } from "Domain/Abstractions/Repositories/IBooksRepository";
 import { Pool } from 'mysql2/promise';
-import { BookDto } from "Domain/Dtos/BookDto";
+import { BookDto } from "Domain/Dtos/Books/BookDto";
+import {BookQueryParams} from 'Domain/Dtos/Books/BookQueryParams'
 import { Book } from "Domain/Types/Book";
 
 export class BooksRepository implements IBooksRepository{
@@ -11,6 +12,7 @@ export class BooksRepository implements IBooksRepository{
     {
         this._dbConnection = _dbService.getConnection();
     }
+    
 
     async add(book: Book): Promise<number> {
          const [result] : any = await this._dbConnection.query(`
@@ -43,7 +45,7 @@ export class BooksRepository implements IBooksRepository{
 
     async get(id: number): Promise<BookDto> {
         const [result] : any = await this._dbConnection.query(`
-        SELECT title, author, isbn, shelf_location, available_quantity 
+        SELECT id, title, author, isbn, shelf_location, available_quantity 
         FROM books 
         WHERE id = ?
         `, [id]);
@@ -53,11 +55,62 @@ export class BooksRepository implements IBooksRepository{
 
      async list(): Promise<BookDto[]> {
         const [result] : any = await this._dbConnection.query(`
-        SELECT title, author, isbn, shelf_location, available_quantity 
+        SELECT id, title, author, isbn, shelf_location, available_quantity 
         FROM books 
         `);
 
         return result;
     }
 
+    async search(bookQueryParams: BookQueryParams): Promise<BookDto[]> {
+        let query = `
+        SELECT id, title, author, isbn, shelf_location, available_quantity 
+        FROM books 
+        WHERE 1 = 1
+        `;
+        const values = [];
+
+        if (bookQueryParams.title) {
+            query += ' AND title LIKE ?';
+            values.push(`%${bookQueryParams.title}%`);
+        }
+
+        if (bookQueryParams.author) {
+            query += ' AND author LIKE ?';
+            values.push(`%${bookQueryParams.author}%`);
+        }
+        
+        if (bookQueryParams.isbn) {
+            query += ' AND ISBN LIKE ?';
+            values.push(`%${bookQueryParams.isbn}%`);
+        }
+
+        const [result] : any = await this._dbConnection.query(query, values);
+
+        return result;
+    }
+
+    async isBookExists(isbn: string, excludedId?: number): Promise<boolean> {
+        let query = `
+        SELECT 1
+        FROM books 
+        WHERE isbn = ?
+        `;
+
+        const values = [];
+
+        values.push(isbn);
+
+        if (excludedId) {
+            query += ' AND id <> ?';
+            values.push(excludedId);
+        }
+
+        const [result] : any = await this._dbConnection.query(query, values);
+
+        if(result[0])
+            return true
+
+        return false;
+    }
 }

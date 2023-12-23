@@ -1,6 +1,6 @@
 import { IDatabaseService } from "Domain/Abstractions/IDatabaseService";
 import { IBorrowersRepository } from "Domain/Abstractions/Repositories/IBorrowersRepository";
-import { BorrowerDto } from "Domain/Dtos/BorrowerDto";
+import { BorrowerDto } from "Domain/Dtos/Borrowers/BorrowerDto";
 import { Borrower } from "Domain/Types/Borrower";
 import { Pool } from 'mysql2/promise';
 
