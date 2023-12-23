@@ -1,0 +1,16 @@
+version: '3.4'
+
+services:
+  bookinap-db:
+    image: mysql:latest
+    container_name: Library.Db
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DB=Library
+      #- MYSQL_USER=MYSQL
+      #- MYSQL_PASSWORD=MYSQL
+    volumes:
+      - ./.containers/database:/docker-entrypoint-initdb.d
+    ports:
+      - 3307:3306
