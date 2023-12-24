@@ -5,6 +5,7 @@ import { BookDto } from "Domain/Dtos/Books/BookDto";
 import {BookQueryParams} from 'Domain/Dtos/Books/BookQueryParams'
 import { Book } from "Domain/Types/Book";
 import { inject, injectable } from 'inversify';
+import { BorrowedBookDto } from "Domain/Dtos/Books/BorrowedBookDto";
 
 @injectable()
 export class BooksRepository implements IBooksRepository{
@@ -14,8 +15,7 @@ export class BooksRepository implements IBooksRepository{
     {
         this._dbConnection = _dbService.getConnection();
     }
-    
-
+   
     async add(book: Book): Promise<number> {
          const [result] : any = await this._dbConnection.query(`
             INSERT INTO books (title, author, isbn, available_quantity, shelf_location)
@@ -114,5 +114,18 @@ export class BooksRepository implements IBooksRepository{
             return true
 
         return false;
+    }
+
+    async getOverDueBooks(): Promise<BorrowedBookDto[]> 
+    {
+        const [result] : any = await this._dbConnection.query(`
+        SELECT book.id AS book_id, book.title, borrowed.borrow_date, borrowed.due_date, borrowed.borrower_id, borrower.email AS borrower_email
+        FROM borrowed_books borrowed
+        JOIN books book ON borrowed.book_id = book.id
+        JOIN borrowers borrower ON borrowed.borrower_id = borrower.id
+        WHERE borrowed.is_returned = FALSE AND CURDATE() > borrowed.due_date;
+        `);
+
+        return result;
     }
 }

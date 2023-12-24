@@ -5,6 +5,7 @@ import { IBooksService } from "Domain/Abstractions/Services/IBooksService";
 import { BookDto } from "Domain/Dtos/Books/BookDto";
 import {BookQueryParams} from 'Domain/Dtos/Books/BookQueryParams'
 import { injectable, inject } from 'inversify';
+import { BorrowedBookDto } from "Domain/Dtos/Books/BorrowedBookDto";
 
 
 @injectable()
@@ -13,6 +14,7 @@ export class BooksService implements IBooksService
     constructor(@inject("IBooksRepository") private readonly _booksRepository : IBooksRepository)
     {
     }
+    
 
     async add(book: BookDto): Promise<Response<number>> 
     {
@@ -90,5 +92,11 @@ export class BooksService implements IBooksService
     {
         let result = await this._booksRepository.search(bookQueryParams);
         return Response.createInstance<BookDto[]>(result, StatusCodes.Ok)
+    }
+
+    async getOverDueBooks(): Promise<Response<BorrowedBookDto[]>> 
+    {
+        let result = await this._booksRepository.getOverDueBooks();
+        return Response.createInstance<BorrowedBookDto[]>(result, StatusCodes.Ok)    
     }
 }

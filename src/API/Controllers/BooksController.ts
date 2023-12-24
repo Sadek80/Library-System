@@ -32,6 +32,13 @@ export class BooksController {
         res.status(books.StatusCode).json(books)
     }
 
+    @httpGet('/overdue')
+    async getOverDueBooks(req: Request, res: Response) 
+    {
+        const books = await this._service.getOverDueBooks();
+        res.status(books.StatusCode).json(books)
+    }
+
     @httpGet('/:id')
     async getById(@requestParam("id") id: number, req: Request, res: Response) 
     {
