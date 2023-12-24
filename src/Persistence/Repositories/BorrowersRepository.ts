@@ -46,7 +46,7 @@ export class BorrowersRepository implements IBorrowersRepository{
 
     async get(id: number): Promise<BorrowerDto> {
         const [result] : any = await this._dbConnection.query(`
-        SELECT name, email
+        SELECT id, name, email
         FROM borrowers 
         WHERE id = ?
         `, [id]);
@@ -56,7 +56,7 @@ export class BorrowersRepository implements IBorrowersRepository{
 
     async list(): Promise<BorrowerDto[]> {
         const [result] : any = await this._dbConnection.query(`
-        SELECT name, email
+        SELECT id, name, email
         FROM borrowers 
         `);
 
