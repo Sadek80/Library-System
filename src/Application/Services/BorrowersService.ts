@@ -10,6 +10,8 @@ import { Borrower } from "Domain/Types/Borrower";
 import { IEmailValidator } from "Domain/Abstractions/Helpers/IEmailValidator";
 import { injectable, inject } from 'inversify';
 import { BorrowedBookDto } from "Domain/Dtos/Books/BorrowedBookDto";
+import { ReturnBookDto } from "Domain/Dtos/Borrowers/ReturnBookDto";
+import { BorrowBookDto } from "Domain/Dtos/Borrowers/BorrowBookDto";
 
 
 @injectable()
@@ -20,7 +22,7 @@ export class BorrowersService implements IBorrowersService
                 @inject("IEmailValidator") private readonly _emailValidator: IEmailValidator)
     {
     }
-   
+    
 
     async add(borrower: RegisterBorrowerDto): Promise<Response<number>> 
     {
@@ -134,5 +136,29 @@ export class BorrowersService implements IBorrowersService
     {
         let result = await this._borrowersRepository.getMyBooks(id);
         return Response.createInstance<BorrowedBookDto[]>(result, StatusCodes.Ok)    
+    }
+
+    async borrowBook(borrowBookDto: BorrowBookDto): Promise<Response<boolean>> 
+    {
+        let result = await this._borrowersRepository.borrowBook(borrowBookDto);
+
+        if(result)
+        {
+            return Response.createInstance<boolean>(result, StatusCodes.Ok);
+        }
+
+        return Response.createInstance<boolean>("Failed to Borrow. Try again Later.", StatusCodes.BadRequest);    
+    }
+
+    async returnBook(returnBookDto: ReturnBookDto): Promise<Response<boolean>> 
+    {
+        let result = await this._borrowersRepository.returnBook(returnBookDto);
+
+        if(result)
+        {
+            return Response.createInstance<boolean>(result, StatusCodes.Ok);
+        }
+
+        return Response.createInstance<boolean>("Book not found or already returned", StatusCodes.BadRequest);    
     }
 }

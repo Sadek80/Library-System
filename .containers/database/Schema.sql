@@ -75,3 +75,80 @@ VALUES('1984', 'George Orwel', '1234567891234', 10, 'left most');
 INSERT INTO `books`
 (`title`, `author`, `isbn`, `available_quantity`, `shelf_location`)
 VALUES('Database', 'Hussien', '8888888888888', 10, 'left most');
+
+
+-- borrow book sp --
+
+DELIMITER //
+
+CREATE PROCEDURE BorrowBook (
+    IN book_id BIGINT,
+    IN borrower_id BIGINT,
+    IN borrow_date DATE,
+    IN due_date DATE
+)
+BEGIN
+    DECLARE quantityAvailable INT;
+
+    START TRANSACTION;
+
+    SELECT available_quantity INTO quantityAvailable FROM books WHERE id = book_id FOR UPDATE;
+
+    IF quantityAvailable > 0 THEN
+
+        INSERT INTO borrowed_books (book_id, borrower_id, borrow_date, due_date)
+        VALUES (book_id, borrower_id, borrow_date, due_date);
+
+        UPDATE books SET available_quantity = quantityAvailable - 1 WHERE id = book_id;
+
+        COMMIT;
+        
+        SELECT 1 AS succeeded;
+    ELSE
+        ROLLBACK;
+
+        SELECT 0 AS succeeded;
+    END IF;
+END //
+
+DELIMITER ;
+
+
+-- Return Book Sp --
+DELIMITER //
+
+CREATE PROCEDURE ReturnBook(
+    IN book_id BIGINT,
+    IN borrowed_book_id BIGINT,
+    IN return_date DATE
+)
+BEGIN
+    DECLARE bookCount INT;
+    
+    SELECT COUNT(*)
+    INTO bookCount
+    FROM borrowed_books
+    WHERE book_id = book_id AND is_returned = FALSE AND id = borrowed_book_id;
+
+    IF bookCount > 0 THEN
+        START TRANSACTION;
+        
+        UPDATE borrowed_books
+        SET is_returned = TRUE, return_date = return_date
+        WHERE book_id = book_id AND is_returned = FALSE AND id = borrowed_book_id;
+
+        UPDATE books
+        SET available_quantity = available_quantity + 1
+        WHERE book_id = book_id;
+
+        COMMIT;
+        
+        SELECT 1 AS succeeded;
+    ELSE
+        SELECT 0 AS succeeded;
+    END IF;
+END //
+
+DELIMITER ;
+
+

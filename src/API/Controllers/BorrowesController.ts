@@ -1,6 +1,8 @@
 import { IBorrowersService } from 'Domain/Abstractions/Services/IBorrowersService'
+import { BorrowBookDto } from 'Domain/Dtos/Borrowers/BorrowBookDto'
 import { BorrowerQueryParams } from 'Domain/Dtos/Borrowers/BorrowerQueryParams'
 import { RegisterBorrowerDto } from 'Domain/Dtos/Borrowers/RegisterBorrowerDto'
+import { ReturnBookDto } from 'Domain/Dtos/Borrowers/ReturnBookDto'
 import { Request, Response } from 'express'
 import { inject } from 'inversify'
 import {
@@ -36,6 +38,20 @@ export class BorrowersController {
     async search(@queryParam() param: BorrowerQueryParams, req: Request, res: Response) 
     {
         const books = await this._service.search(param);
+        res.status(books.StatusCode).json(books)
+    }
+
+    @httpPost('/borrow')
+    async borrowBook(@requestBody() borrowBookDto: BorrowBookDto, req: Request, res: Response)
+    {
+        const books = await this._service.borrowBook(borrowBookDto);
+        res.status(books.StatusCode).json(books)
+    }
+
+    @httpPut('/return')
+    async returnBook(@requestBody() returnBookDto: ReturnBookDto, req: Request, res: Response)
+    {
+        const books = await this._service.returnBook(returnBookDto);
         res.status(books.StatusCode).json(books)
     }
 

@@ -3,6 +3,8 @@ import { Response } from "../../Dtos/Response";
 import { BorrowerDto } from "Domain/Dtos/Borrowers/BorrowerDto";
 import { RegisterBorrowerDto } from "Domain/Dtos/Borrowers/RegisterBorrowerDto";
 import { BorrowedBookDto } from "Domain/Dtos/Books/BorrowedBookDto";
+import { ReturnBookDto } from "Domain/Dtos/Borrowers/ReturnBookDto";
+import { BorrowBookDto } from "Domain/Dtos/Borrowers/BorrowBookDto";
 
 export interface IBorrowersService
 {
@@ -40,4 +42,14 @@ export interface IBorrowersService
      * Get All the current Borrower books
      */
     getMyBooks(id: number): Promise<Response<BorrowedBookDto[]>>;
+
+    /**
+     * Borrow Book
+     */
+    borrowBook(borrowBookDto: BorrowBookDto): Promise<Response<boolean>>;
+
+    /**
+     * Return Book
+     */
+    returnBook(returnBookDto: ReturnBookDto): Promise<Response<boolean>>;
 }

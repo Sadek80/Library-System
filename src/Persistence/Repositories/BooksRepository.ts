@@ -119,7 +119,7 @@ export class BooksRepository implements IBooksRepository{
     async getOverDueBooks(): Promise<BorrowedBookDto[]> 
     {
         const [result] : any = await this._dbConnection.query(`
-        SELECT book.id AS book_id, book.title, borrowed.borrow_date, borrowed.due_date, borrowed.borrower_id, borrower.email AS borrower_email
+        SELECT book.id AS book_id, borrowed.id AS borrowed_book_id, book.title, borrowed.borrow_date, borrowed.due_date, borrowed.borrower_id, borrower.email AS borrower_email
         FROM borrowed_books borrowed
         JOIN books book ON borrowed.book_id = book.id
         JOIN borrowers borrower ON borrowed.borrower_id = borrower.id

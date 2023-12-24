@@ -6,6 +6,8 @@ import { Borrower } from "Domain/Types/Borrower";
 import { Pool } from 'mysql2/promise';
 import { inject, injectable } from 'inversify';
 import { BorrowedBookDto } from "Domain/Dtos/Books/BorrowedBookDto";
+import { BorrowBookDto } from "Domain/Dtos/Borrowers/BorrowBookDto";
+import { ReturnBookDto } from "Domain/Dtos/Borrowers/ReturnBookDto";
 
 @injectable()
 export class BorrowersRepository implements IBorrowersRepository{
@@ -15,7 +17,6 @@ export class BorrowersRepository implements IBorrowersRepository{
     {
         this._dbConnection = _dbService.getConnection();
     }
-    
 
     async add(borrower: Borrower): Promise<number> {
         const [result] : any = await this._dbConnection.query(`
@@ -116,7 +117,7 @@ export class BorrowersRepository implements IBorrowersRepository{
     async getMyBooks(id: number): Promise<BorrowedBookDto[]> 
     {
         const [result] : any = await this._dbConnection.query(`
-        SELECT book.id AS book_id, book.title, borrowed.borrow_date, borrowed.due_date, borrowed.borrower_id, borrower.email AS borrower_email
+        SELECT book.id AS book_id, borrowed.id AS borrowed_book_id, book.title, borrowed.borrow_date, borrowed.due_date, borrowed.borrower_id, borrower.email AS borrower_email
         FROM borrowed_books borrowed
         JOIN books book ON borrowed.book_id = book.id
         JOIN borrowers borrower ON borrowed.borrower_id = borrower.id
@@ -124,5 +125,22 @@ export class BorrowersRepository implements IBorrowersRepository{
         `, [id]);
 
         return result;    
+    }
+
+    async borrowBook(borrowBookDto: BorrowBookDto): Promise<boolean> 
+    {
+        const [result] : any = await this._dbConnection.query(`
+        CALL BorrowBook(?, ?, ?, ?)
+        `, [borrowBookDto.book_id, borrowBookDto.borrower_id, borrowBookDto.borrow_date, borrowBookDto.due_date]);
+
+        return result[0][0].succeeded;        
+    }
+
+    async returnBook(returnBookDto: ReturnBookDto): Promise<boolean> {
+        const [result] : any = await this._dbConnection.query(`
+        CALL ReturnBook(?, ?, ?)
+        `, [returnBookDto.book_id, returnBookDto.borrowed_book_id, returnBookDto.return_date]);
+
+        return result[0][0].succeeded;            
     }
 }
