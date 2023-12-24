@@ -5,6 +5,7 @@ import { BorrowerQueryParams } from "Domain/Dtos/Borrowers/BorrowerQueryParams";
 import { Borrower } from "Domain/Types/Borrower";
 import { Pool } from 'mysql2/promise';
 import { inject, injectable } from 'inversify';
+import { BorrowedBookDto } from "Domain/Dtos/Books/BorrowedBookDto";
 
 @injectable()
 export class BorrowersRepository implements IBorrowersRepository{
@@ -14,6 +15,7 @@ export class BorrowersRepository implements IBorrowersRepository{
     {
         this._dbConnection = _dbService.getConnection();
     }
+    
 
     async add(borrower: Borrower): Promise<number> {
         const [result] : any = await this._dbConnection.query(`
@@ -111,4 +113,16 @@ export class BorrowersRepository implements IBorrowersRepository{
         return false;    
     }
 
+    async getMyBooks(id: number): Promise<BorrowedBookDto[]> 
+    {
+        const [result] : any = await this._dbConnection.query(`
+        SELECT book.id AS book_id, book.title, borrowed.borrow_date, borrowed.due_date, borrowed.borrower_id, borrower.email AS borrower_email
+        FROM borrowed_books borrowed
+        JOIN books book ON borrowed.book_id = book.id
+        JOIN borrowers borrower ON borrowed.borrower_id = borrower.id
+        WHERE borrowed.is_returned = FALSE AND borrowed.borrower_id = ?;
+        `, [id]);
+
+        return result;    
+    }
 }

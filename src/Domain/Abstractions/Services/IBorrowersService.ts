@@ -2,6 +2,7 @@ import { BorrowerQueryParams } from "Domain/Dtos/Borrowers/BorrowerQueryParams";
 import { Response } from "../../Dtos/Response";
 import { BorrowerDto } from "Domain/Dtos/Borrowers/BorrowerDto";
 import { RegisterBorrowerDto } from "Domain/Dtos/Borrowers/RegisterBorrowerDto";
+import { BorrowedBookDto } from "Domain/Dtos/Books/BorrowedBookDto";
 
 export interface IBorrowersService
 {
@@ -30,5 +31,13 @@ export interface IBorrowersService
      */
     list() : Promise<Response<BorrowerDto[]>>;
 
+    /**
+     * Search over All Borrowers by email
+     */
     search(BorrowerQueryParams: BorrowerQueryParams): Promise<Response<BorrowerDto[]>>;
+
+    /**
+     * Get All the current Borrower books
+     */
+    getMyBooks(id: number): Promise<Response<BorrowedBookDto[]>>;
 }

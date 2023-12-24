@@ -9,6 +9,7 @@ import { IPasswordHasher } from "Domain/Abstractions/Helpers/IPasswordHasher";
 import { Borrower } from "Domain/Types/Borrower";
 import { IEmailValidator } from "Domain/Abstractions/Helpers/IEmailValidator";
 import { injectable, inject } from 'inversify';
+import { BorrowedBookDto } from "Domain/Dtos/Books/BorrowedBookDto";
 
 
 @injectable()
@@ -19,6 +20,7 @@ export class BorrowersService implements IBorrowersService
                 @inject("IEmailValidator") private readonly _emailValidator: IEmailValidator)
     {
     }
+   
 
     async add(borrower: RegisterBorrowerDto): Promise<Response<number>> 
     {
@@ -126,5 +128,11 @@ export class BorrowersService implements IBorrowersService
     {
         let result = await this._borrowersRepository.search(borrowerQueryParams);
         return Response.createInstance<BorrowerDto[]>(result, StatusCodes.Ok)
+    }
+
+    async getMyBooks(id: number): Promise<Response<BorrowedBookDto[]>> 
+    {
+        let result = await this._borrowersRepository.getMyBooks(id);
+        return Response.createInstance<BorrowedBookDto[]>(result, StatusCodes.Ok)    
     }
 }

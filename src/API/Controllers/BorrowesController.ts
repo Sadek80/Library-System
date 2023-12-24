@@ -25,6 +25,13 @@ export class BorrowersController {
         res.status(books.StatusCode).json(books)
     }
 
+    @httpGet('/my-books/:id')
+    async getBorrowerBooks(@requestParam('id') id: number, req: Request, res: Response) 
+    {
+        const books = await this._service.getMyBooks(id);
+        res.status(books.StatusCode).json(books)
+    }
+
     @httpGet('/search')
     async search(@queryParam() param: BorrowerQueryParams, req: Request, res: Response) 
     {
