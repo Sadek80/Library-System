@@ -66,3 +66,12 @@ ALTER TABLE
     `borrowed_books` ADD CONSTRAINT `borrowed_books_borrower_id_foreign` FOREIGN KEY(`borrower_id`) REFERENCES `borrowers`(`id`);
 ALTER TABLE
     `borrowed_books` ADD CONSTRAINT `borrowed_books_book_id_foreign` FOREIGN KEY(`book_id`) REFERENCES `books`(`id`);
+
+
+INSERT INTO `books`
+(`title`, `author`, `isbn`, `available_quantity`, `shelf_location`)
+VALUES('1984', 'George Orwel', '1234567891234', 10, 'left most');
+
+INSERT INTO `books`
+(`title`, `author`, `isbn`, `available_quantity`, `shelf_location`)
+VALUES('Database', 'Hussien', '8888888888888', 10, 'left most');
