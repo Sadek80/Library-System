@@ -1,4 +1,5 @@
 import { IBooksService } from 'Domain/Abstractions/Services/IBooksService'
+import { BookDto } from 'Domain/Dtos/Books/BookDto'
 import { BookQueryParams } from 'Domain/Dtos/Books/BookQueryParams'
 import { Request, Response } from 'express'
 import { inject } from 'inversify'
@@ -9,8 +10,9 @@ import {
   httpDelete,
   requestParam,
   queryParam,
+  requestBody,
+  httpPut,
 } from 'inversify-express-utils'
-import { title } from 'process'
 
 @controller('/books')
 export class BooksController {
@@ -24,16 +26,9 @@ export class BooksController {
     }
 
     @httpGet('/search')
-    async search(req: Request, res: Response) 
+    async search(@queryParam() param: BookQueryParams, req: Request, res: Response) 
     {
-        var params : BookQueryParams = {
-          title: req.query.title as string,
-          author: req.query.author as string,
-          isbn: req.query.isbn as string
-        } 
-
-        console.log(params)
-        const books = await this._service.search(params);
+        const books = await this._service.search(param);
         res.status(books.StatusCode).json(books)
     }
 
@@ -42,5 +37,26 @@ export class BooksController {
     {
         const books = await this._service.get(id);
         res.status(books.StatusCode).json(books)
+    }
+
+    @httpDelete('/:id')
+    async delete(@requestParam("id") id: number, req: Request<any, {}, {}, {}>, res: Response) 
+    {
+        const books = await this._service.delete(id);
+        res.status(books.StatusCode).json(books)
+    }
+
+    @httpPost('/')
+    async add(@requestBody() body: BookDto, req: Request<any, {}, {}, {}>, res: Response) 
+    {
+      const books = await this._service.add(body);
+      res.status(books.StatusCode).json(books)
+    }
+
+    @httpPut('/:id')
+    async update(@requestParam("id") id: number, @requestBody() body: BookDto, req: Request<any, {}, {}, {}>, res: Response) 
+    {
+      const books = await this._service.update(id, body);
+      res.status(books.StatusCode).json(books)
     }
 }

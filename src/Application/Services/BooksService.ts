@@ -21,7 +21,6 @@ export class BooksService implements IBooksService
         }
 
         let isBookExisted = await this._booksRepository.isBookExists(book.isbn, null);
-        console.log("is book existed:" +isBookExisted)
 
         if(isBookExisted)
         {
