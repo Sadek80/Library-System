@@ -33,28 +33,28 @@ export class BooksController {
     }
 
     @httpGet('/:id')
-    async getById(@requestParam("id") id: number, req: Request<any, {}, {}, {}>, res: Response) 
+    async getById(@requestParam("id") id: number, req: Request, res: Response) 
     {
         const books = await this._service.get(id);
         res.status(books.StatusCode).json(books)
     }
 
     @httpDelete('/:id')
-    async delete(@requestParam("id") id: number, req: Request<any, {}, {}, {}>, res: Response) 
+    async delete(@requestParam("id") id: number, req: Request, res: Response) 
     {
         const books = await this._service.delete(id);
         res.status(books.StatusCode).json(books)
     }
 
     @httpPost('/')
-    async add(@requestBody() body: BookDto, req: Request<any, {}, {}, {}>, res: Response) 
+    async add(@requestBody() body: BookDto, req: Request, res: Response) 
     {
       const books = await this._service.add(body);
       res.status(books.StatusCode).json(books)
     }
 
     @httpPut('/:id')
-    async update(@requestParam("id") id: number, @requestBody() body: BookDto, req: Request<any, {}, {}, {}>, res: Response) 
+    async update(@requestParam("id") id: number, @requestBody() body: BookDto, req: Request, res: Response) 
     {
       const books = await this._service.update(id, body);
       res.status(books.StatusCode).json(books)
